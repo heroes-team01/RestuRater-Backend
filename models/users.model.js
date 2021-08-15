@@ -10,39 +10,39 @@ const userSchema = new mongoose.Schema(
     
     page: [pagesSchema],
   },
-  { timestamps: true }
+  // { timestamps: true }
 );
 
 const userModel = mongoose.model("users", userSchema);
 
 const seedUserData = () => {
   const newUser = new userModel({
-    email: "ayoub.alqeam@gmail.com",
+    email: "Amneh99el@gmail.com",
     page: {
-      name: "Ayyoub",
-      viewsOfPage: 1,
-      pageName: 'Ayooob',
+      name: "Amneh",
+      viewsOfPage: 5,
+      pageName: 'Amneh',
       coverImg: "asmkdnjlhskjbakdbjkasbd",
       profileImg: "profileImg",
       info: "infoinfoinfoinfoinfoinfoinfo",
       
-      recipes: {
-        recipeId: 20,
-        dishImg: "dishImg",
-        dishTitle: "dishTitle",
-        dishInfo: "dishInfo",
-        likes: {
-          userIds: ["sadsadsad", "sadasd2"],
-        },
-        rates: {
-          userIds: ["sadsadsad", "sadasd2"],
-          rate: [5, 4],
-        },
-        comments: {
-          userIds: ["sadsadsad", "sadasd2"],
-          commentText: ['hello', 'zatchy'],
-        },
-      },
+      // recipes: {
+      //   recipeId: 20,
+      //   dishImg: "dishImg",
+      //   dishTitle: "dishTitle",
+      //   dishInfo: "dishInfo",
+      //   likes: {
+      //     userIds: ["sadsadsad", "sadasd2"],
+      //   },
+      //   rates: {
+      //     userIds: ["sadsadsad", "sadasd2"],
+      //     rate: [5, 4],
+      //   },
+      //   comments: {
+      //     userIds: ["sadsadsad", "sadasd2"],
+      //     commentText: ['hello', 'zatchy'],
+      //   },
+      // },
     },
   });
 
