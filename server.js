@@ -6,8 +6,8 @@ require("dotenv").config();
 const PORT = process.env.PORT;
 // const axios = require('axios');
 app.use(express.json());
-const MONGO_DB_URL = process.env.MONGO_DB_URL;
-const mongoose = require("mongoose");
+// const MONGO_DB_URL = process.env.MONGO_DB_URL;
+const mongoose = require('mongoose');
 // const { seedUserData } = require("./models/users.model");
 
 const { addUser, getPage } = require("./controller/users.controller");
@@ -24,9 +24,61 @@ const { createLike, deleteLike } = require("./controller/likes.controller");
 // seedUserData();
 //////////////////////////////////////////////////////////////////////////////////
 
-mongoose.connect(`${MONGO_DB_URL}/user`, {
-  useNewUrlParser: true, useUnifiedTopology: true
-});
+// mongoose.connect(`${MONGO_DB_URL}/user`, {
+//   useNewUrlParser: true, useUnifiedTopology: true
+// });
+
+mongoose.connect('mongodb://localhost:27017/ResturantData',
+{useNewUrlParser: true, useUnifiedTopology: true});
+
+/////////////////
+
+const ResturantData = new mongoose.Schema({
+  title: String,
+  address: String,
+  description: String,
+  type:String,
+  image_url:String,
+
+})
+
+const Resturant = mongoose.model('ResturantData', ResturantData);
+
+app.get('/allresturant', (req , res) => {
+  Resturant.find({},(error,result) => {
+    if (!error ){
+      console.log(result)
+      res.send(result)
+    }else{
+      console.log('error')
+      res.send(error.message)
+    }
+  })
+  // .then(result => {
+  //   res.send(result)
+  // })
+  // .catch(error => {
+  //   res.send(error.message)
+  // })
+})
+
+// function seedData() {
+//   const resturant = new Kitten({ 
+//     title: 'Silence',
+//     address: 'address',
+//    });
+
+//    const resturant2 = new Kitten({ 
+//     title: 'Silenwce',
+//     address: 'addrwess',
+//    });
+
+//    resturant.save()
+//    resturant2.save()
+// }
+
+// seedData()
+
 //////////////////////////////////////////////////////////////////////////////////
 app.post("/user", addUser);
 // Recipes
