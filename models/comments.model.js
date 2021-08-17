@@ -9,19 +9,25 @@ const mongoose = require('mongoose'); // mongoose package used to create the sch
    rating_comment: { type: String },
    user_img: { type: String },
  });
- 
+ const usersSchema= new mongoose.Schema({
+   userslist : {type:String},
+   users: [userSchema],
+ })
  
  const userModel = mongoose.model('reviews', userSchema);
  
- 
+ const usersModel = mongoose.model('usersS', usersSchema);
 
  const seedCollection = () => {
    try { 
-     const firstuser = new userModel({
-       email: "hebaalmomani1998@gmail.com",
-       rest_name: "Mission Chinese Food",
-       rating_comment: "great restarunt😍",
-       user_img: './heba.jpg'
+     const firstuser = new usersModel({
+       userslist:'users',
+       users:[{
+         email: "hebaalmomani1998@gmail.com",
+         rest_name: "Mission Chinese Food",
+         rating_comment: "great restarunt😍",
+         user_img: './heba.jpg'
+       }]
      });
      const seconduser = new userModel({
        email: "hebaalmomani1998@gmail.com",
@@ -41,5 +47,6 @@ const mongoose = require('mongoose'); // mongoose package used to create the sch
  
  module.exports = {
    userModel,
-   seedCollection
+   seedCollection,
+   usersModel
  }
