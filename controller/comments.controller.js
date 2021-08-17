@@ -1,24 +1,20 @@
-const { userModel,usersModel } = require('../models/comments.model'); // the userModel that we will use to get the users data from
+const { userModel, usersModel } = require("../models/comments.model"); // the userModel that we will use to get the users data from
 
- const getReview = async (req, res) => {
-   const { email } = req.query; // we are getting the email from the query parameter
+const getReview = async (req, res) => {
+  const { email } = req.query; // we are getting the email from the query parameter
 
-  
-   usersModel.find({ userslist: 'users' }, (err, userComment) => {
-   
-    if(err){
-      res.send('no review was found');
-    }else{
-      let selecteduser = userComment[0].users.filter(user=>{
-        if(user.email==email){
+  usersModel.find({ userslist: "usersList" }, (err, userComment) => {
+    if (err) {
+      res.send("no review was found");
+    } else {
+      let selecteduser = userComment[0].users.filter((user) => {
+        if (user.userEmail == email) {
           return user;
-
         }
-
-      })
+      });
       // console.log('test'+ selecteduser[0]);
-
-      res.send(selecteduser);
+console.log(selecteduser);
+      res.send(selecteduser[0]);
     }
     //  if (userComment === null) {
     //   console.log('error');
@@ -29,67 +25,84 @@ const { userModel,usersModel } = require('../models/comments.model'); // the use
     //    res.json(userComment[0]);
 
     //  }
-   });
- 
- }
- 
- const createReview = async (req, res) => {
+  });
+};
 
-   const {
-    email,
-    rest_name,
-    rating_comment,
-    user_img,
-   } = req.body;
- 
-   // create the new review 
-   const nemComment = new userModel({
-     email: email,
-     rest_name: rest_name,
-     rating_comment,
-     user_img
-   });
-   nemComment.save();
- 
-   res.json(nemComment);
- }
- 
-
- const deleteReview = async (req, res) => {
-   const reviewId = req.params.review_id;
- 
-   userModel.deleteOne({ _id: reviewId }, (error, deleted) => {
-     res.send(deleted);
-   });
- 
- }
- 
- 
-
- 
- const updateReviw = async (req, res) => {
- 
-   const reviewId = Number(req.params.review_id); 
- 
-   const {
-    rest_name,
-    rating_comment,
-    user_img
-   } = req.body;
- 
-   usersModel.find({ userslist: 'users' }, (err, userComment) => {
-    if(err){
-      res.send('no review was found');
-    }else{
-userComment[0].users.splice(reviewId,1,{
-  rest_name: rest_name,
-    rating_comment :rating_comment,
-    user_img:user_img,
-})
-userComment[0].save()
-res.send(userComment[0].users)
-      }
+const createReview = async (req, res) => {
+  const { email, rest_name, rating_comment } = req.body;
+  usersModel.find({ userslist: "users" }, (err, userComment) => {
+    if (err) {
+      res.send("no review was found");
+    } else {
+      // if the user already existed
+     let returnedUser = userComment[0].users.filter(user =>{
+       if (user.userEmail == user){
+         user.comments.push({
+          rest_name : rest_name,
+          rating_comment :rating_comment
+         })
+         userComments[0].save();
+         res.send(user)
+       }
+     })
+// if there is no user
+if (returnedUser.length ==0){
+  userComment[0].users.push({
+    userName : userName,
+    userEmail : email,
+    comments : [{
+      rest_name : rest_name,
+      rating_comment :rating_comment
+    }]
   })
+  userComment[0].save();
+  let user =  userComment[0].users.filter(user=>{
+    if (userEmail == email) {
+      return user
+    }
+  })
+  res.send(user)
+}
+    }
+  });
+  // create the new review
+  //  const nemComment = new userModel({
+  //    email: email,
+  //    rest_name: rest_name,
+  //    rating_comment,
+  //    user_img
+  //  });
+  //  nemComment.save();
+
+  //  res.json(nemComment);
+};
+
+const deleteReview = async (req, res) => {
+  const reviewId = req.params.review_id;
+
+  userModel.deleteOne({ _id: reviewId }, (error, deleted) => {
+    res.send(deleted);
+  });
+};
+
+const updateReviw = async (req, res) => {
+  const reviewId = Number(req.params.review_id);
+
+  const { rest_name, rating_comment, user_img } = req.body;
+
+  usersModel.find({ userslist: "users" }, (err, userComment) => {
+    if (err) {
+      res.send("no review was found");
+    } else {
+      userComment[0].users.splice(reviewId, 1, {
+        rest_name: rest_name,
+        rating_comment: rating_comment,
+        user_img: user_img,
+      });
+      userComment[0].save();
+      res.send(userComment[0].users);
+    }
+  });
   //  userModel.findByIdAndUpdate(
   //    { _id: reviewId }, // the id of the item we want to find
   //    {
@@ -97,18 +110,17 @@ res.send(userComment[0].users)
   //     rating_comment: rating_comment,
   //     user_img: user_img
   //    },
-  //    { new: true }, 
+  //    { new: true },
   //    (err, data) => {
   //      console.log(data);
   //      res.json(data);
   //    }
   //  )
- 
- }
- 
- module.exports = {
-   getReview,
-   createReview,
-   deleteReview,
-   updateReviw
- }
+};
+
+module.exports = {
+  getReview,
+  createReview,
+  deleteReview,
+  updateReviw,
+};
