@@ -1,127 +1,127 @@
-"use strict";
+const { userModel, usersModel } = require("../models/comments.model"); // the userModel that we will use to get the users data from
 
-const { userModel } = require("../models/users.model");
+const getReview = async (req, res) => {
+  const { email } = req.query; // we are getting the email from the query parameter
 
-const createComment = (request, response) => {
-  const recipesId = request.params.recipes_id;
-  const { email, commenterEmail, commenterImg, commenter, comment } =
-    request.body;
-
-  userModel.findOne({ email: email }, (error, userData) => {
-    if (error) {
-      response.send(error);
+  usersModel.find({ userslist: "usersList" }, (err, userComment) => {
+    if (err) {
+      res.send("no review was found");
     } else {
-      console.log(userData);
-      for (let index = 0; index < userData.page[0].recipes.length; index++) {
-        if (recipesId === userData.page[0].recipes[index]._id.toString()) {
-          console.log("I AM IN >>>>>>>>>>>>>>>");
-
-          userData.page[0].recipes[index].comments.push({
-            userIds: commenterEmail,
-            usersImg: commenterImg,
-            usersName: commenter,
-            commentText: comment,
-          });
-
-          userData.save();
-          response.json(userData);
-          console.log(">>>>>>>>>>", index);
-          break;
+      let selecteduser = userComment[0].users.filter((user) => {
+        if (user.userEmail == email) {
+          return user;
         }
-        console.log(index);
-      }
+      });
+      // console.log('test'+ selecteduser[0]);
+      console.log(selecteduser);
+      res.send(selecteduser);
     }
+    //  if (userComment === null) {
+    //   console.log('error');
+    //    res.send('no review was found');
+    //  } else {
+    //   console.log('else');
+    //    console.log(userComment[0]);
+    //    res.json(userComment[0]);
+
+    //  }
   });
 };
 
-const updateComment = (request, response) => {
-  const commentId = request.params.comment_id;
-  const { email, commenterEmail, commenterImg, commenter, comment, recipesId } =
-    request.body;
-
-  userModel.findOne({ email: email }, (error, userData) => {
-    if (error) {
-      response.send(error);
+const createReview = async (req, res) => {
+  const { email, rest_name, rating_comment, userName } = req.body;
+  usersModel.find({ userslist: "usersList" }, (err, userComment) => {
+    if (err) {
+      res.send("no review was found");
     } else {
-      console.log(userData);
-      for (let index = 0; index < userData.page[0].recipes.length; index++) {
-        if (recipesId === userData.page[0].recipes[index]._id.toString()) {
-          for (
-            let j = 0;
-            j < userData.page[0].recipes[index].comments.length;
-            j++
-          ) {
-            console.log("<<<<<<<<<<<<<I AM IN  111111>>>>>>>>>>>>>>>");
-            if (
-              commentId ===
-              userData.page[0].recipes[index].comments[j]._id.toString()
-            ) {
-            console.log("<<<<<<<<<<<<<I AM IN  2222222>>>>>>>>>>>>>>>");
-
-              userData.page[0].recipes[index].comments.splice(j, 1, {
-                _id: userData.page[0].recipes[index].comments[j]._id,
-                userIds: commenterEmail,
-                usersImg: commenterImg,
-                usersName: commenter,
-                commentText: comment,
-              });
-
-              userData.save();
-              response.json(userData);
-              console.log(">>>>>>>>>>", index);
-              break;
-            }
+      // if the user already existed
+      let returnedUser = userComment[0].users.filter(user => {
+        if (user.userEmail == email) {
+          user.comments.push({
+            rest_name: rest_name,
+            rating_comment: rating_comment
+          })
+          userComment[0].save();
+          res.send(user)
+          return user
+        }
+      })
+      // if there is no user
+      if (returnedUser.length == 0) {
+        userComment[0].users.push({
+          userName: userName,
+          userEmail: email,
+          comments: [{
+            rest_name: rest_name,
+            rating_comment: rating_comment
+          }]
+        })
+        userComment[0].save();
+        let user = userComment[0].users.filter(user => {
+          if (user.userEmail == email) {
+            return user
           }
-          break;
-        }
-        console.log(index);
+        })
+        res.send(user)
       }
     }
   });
+  // create the new review
+  //  const nemComment = new userModel({
+  //    email: email,
+  //    rest_name: rest_name,
+  //    rating_comment,
+  //    user_img
+  //  });
+  //  nemComment.save();
+
+  //  res.json(nemComment);
 };
 
-const deleteComment = (request, response) => {
-  const commentId = request.params.comment_id;
-  const { email, recipesId } =
-    request.body;
+const deleteReview = async (req, res) => {
+  const reviewId = req.params.review_id;
 
-  userModel.findOne({ email: email }, (error, userData) => {
-    if (error) {
-      response.send(error);
+  userModel.deleteOne({ _id: reviewId }, (error, deleted) => {
+    res.send(deleted);
+  });
+};
+
+const updateReviw = async (req, res) => {
+  const reviewId = Number(req.params.review_id);
+
+  const { rest_name, rating_comment, user_img } = req.body;
+
+  usersModel.find({ userslist: "users" }, (err, userComment) => {
+    if (err) {
+      res.send("no review was found");
     } else {
-      console.log(userData);
-      for (let index = 0; index < userData.page[0].recipes.length; index++) {
-        if (recipesId === userData.page[0].recipes[index]._id.toString()) {
-          for (
-            let j = 0;
-            j < userData.page[0].recipes[index].comments.length;
-            j++
-          ) {
-            console.log("<<<<<<<<<<<<<I AM IN  Delete 1>>>>>>>>>>>>>>>");
-            if (
-              commentId ===
-              userData.page[0].recipes[index].comments[j]._id.toString()
-            ) {
-              console.log("<<<<<<<<<<<<<I AM IN  Delete>>>>>>>>>>>>>>>");
-
-              userData.page[0].recipes[index].comments.splice(j, 1);
-
-              userData.save();
-              response.json(userData);
-              console.log(">>>>>>>>>>", index);
-              break;
-            }
-          }
-          break;
-        }
-      }
+      userComment[0].users.splice(reviewId, 1, {
+        rest_name: rest_name,
+        rating_comment: rating_comment,
+        user_img: user_img,
+      });
+      userComment[0].save();
+      res.send(userComment[0].users);
     }
   });
+  //  userModel.findByIdAndUpdate(
+  //    { _id: reviewId }, // the id of the item we want to find
+  //    {
+  //     rest_name: rest_name,
+  //     rating_comment: rating_comment,
+  //     user_img: user_img
+  //    },
+  //    { new: true },
+  //    (err, data) => {
+  //      console.log(data);
+  //      res.json(data);
+  //    }
+  //  )
 };
-
 
 module.exports = {
-  createComment,
-  updateComment,
-  deleteComment,
+  getReview,
+  createReview,
+  deleteReview,
+  updateReviw,
 };

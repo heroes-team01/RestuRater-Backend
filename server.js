@@ -4,71 +4,59 @@ const cors = require("cors");
 app.use(cors());
 require("dotenv").config();
 const PORT = process.env.PORT;
-// const axios = require('axios');
+
 app.use(express.json());
-// const MONGO_DB_URL = process.env.MONGO_DB_URL;
+
 const mongoose = require('mongoose');
-// const { seedUserData } = require("./models/users.model");
 
-const { addUser, getPage } = require("./controller/users.controller");
-const updatepage = require("./controller/pages.controller");
-
-
-// const { handelFollow } = require("./controller/follow.controller");
 const {
-  createComment,
-  updateComment,
-  deleteComment,
-} = require("./controller/comments.controller");
-const { createLike, deleteLike } = require("./controller/likes.controller");
-// seedUserData();
-//////////////////////////////////////////////////////////////////////////////////
+  getReview,
+  createReview,
+  deleteReview,
+  updateReviw
+} = require('./controller/comments.controller');
 
-// mongoose.connect(`${MONGO_DB_URL}/user`, {
-//   useNewUrlParser: true, useUnifiedTopology: true
-// });
+const { seedCollection } = require('./models/comments.model');
+// seedCollection();
 
-mongoose.connect('mongodb://localhost:27017/restdata',
+
+
+
+mongoose.connect('mongodb://fav-books:hebaandleen@can-of-book-backend-shard-00-00.zqky4.mongodb.net:27017,can-of-book-backend-shard-00-01.zqky4.mongodb.net:27017,can-of-book-backend-shard-00-02.zqky4.mongodb.net:27017/food?ssl=true&replicaSet=atlas-dmraqr-shard-0&authSource=admin&retryWrites=true&w=majority',
 {useNewUrlParser: true, useUnifiedTopology: true});
 
 /////////////////
 
-const restdata = new mongoose.Schema({
-  title: String,
-  address: String,
-  description: String,
-  type:String,
-  image_url:String,
+// const Kitten = new mongoose.Schema({
+//   title: String,
+//   address: String,
+//   description: String,
+//   type:String,
+//   image_url:String,
+  
+// })
+// const Resturant = mongoose.model('Kitten', Kitten);
 
-})
 
-const resturant = mongoose.model('resturantdata', restdata);
-
-app.get('/allresturant', (req , res) => {
-  resturant.find({},(error,result) => {
-    if (!error ){
-      console.log(result)
-      res.send(result)
-    }else{
-      console.log('error')
-      res.send(error.message)
-    }
-  })
-  // .then(result => {
-  //   res.send(result)
-  // })
-  // .catch(error => {
-  //   res.send(error.message)
-  // })
-})
+// app.get('/allresturant', (req , res) => {
+//   Resturant.find({},(error,result) => {
+//     if (!error ){
+//       console.log(result)
+//       res.send(result)
+//     }else{
+//       console.log('error')
+//       res.send(error.message)
+//     }
+//   })
+// })
 
 // function seedData() {
-//   const resturant = new Kitten({ 
+//   const resturant = new Resturant({ 
 //     title: 'Silence',
 //     address: 'address',
 //    });
 
-//    const resturant2 = new Kitten({ 
+//    const resturant2 = new Resturant({ 
 //     title: 'Silenwce',
 //     address: 'addrwess',
 //    });
@@ -77,30 +65,11 @@ app.get('/allresturant', (req , res) => {
 //    resturant2.save()
 // }
 
-// seedData()
+// // seedData()
 
-//////////////////////////////////////////////////////////////////////////////////
-app.post("/user", addUser);
-// Recipes
-// app.get("/recipes", getRecipes);
-// app.post("/recipe", createRecipe);
-// app.delete("/recipe/:recipes_id", deleteRecipe);
-// app.put("/recipe/:recipes_id", updateRecipe);
-//////////////////////////////////////////////////////////////////////////////////
-app.post("/comment/:recipes_id", createComment);
-app.put("/comment/:comment_id", updateComment);
-app.delete("/comment/:comment_id", deleteComment);
-/////////////////////////////////////////////////////////////////
-app.post("/like/:recipes_id", createLike);
-app.delete("/like/:like_id", deleteLike);
-////////////////////////////////
-
-app.get("/page", getPage);
-app.put("/page", updatepage);
-
-
-app.get("/", function (req, res) {
-  res.send("Welcome to the server of Flavors 101");
-});
+app.get('/reviews', getReview); // Read Operation
+app.post('/review', createReview); // This endpoint is only responsible for handling requests that will create new cats
+app.delete('/review/:review_id', deleteReview);
+app.put('/review/:review_id', updateReviw);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
