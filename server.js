@@ -28,12 +28,12 @@ const { createLike, deleteLike } = require("./controller/likes.controller");
 //   useNewUrlParser: true, useUnifiedTopology: true
 // });
 
-mongoose.connect('mongodb://localhost:27017/ResturantData',
+mongoose.connect('mongodb://localhost:27017/restdata',
 {useNewUrlParser: true, useUnifiedTopology: true});
 
 /////////////////
 
-const ResturantData = new mongoose.Schema({
+const restdata = new mongoose.Schema({
   title: String,
   address: String,
   description: String,
@@ -42,10 +42,10 @@ const ResturantData = new mongoose.Schema({
 
 })
 
-const Resturant = mongoose.model('ResturantData', ResturantData);
+const resturant = mongoose.model('resturantdata', restdata);
 
 app.get('/allresturant', (req , res) => {
-  Resturant.find({},(error,result) => {
+  resturant.find({},(error,result) => {
     if (!error ){
       console.log(result)
       res.send(result)
