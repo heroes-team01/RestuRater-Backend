@@ -13,8 +13,8 @@ const getReview = async (req, res) => {
         }
       });
       // console.log('test'+ selecteduser[0]);
-console.log(selecteduser);
-      res.send(selecteduser[0]);
+      console.log(selecteduser);
+      res.send(selecteduser);
     }
     //  if (userComment === null) {
     //   console.log('error');
@@ -29,40 +29,41 @@ console.log(selecteduser);
 };
 
 const createReview = async (req, res) => {
-  const { email, rest_name, rating_comment } = req.body;
-  usersModel.find({ userslist: "users" }, (err, userComment) => {
+  const { email, rest_name, rating_comment, userName } = req.body;
+  usersModel.find({ userslist: "usersList" }, (err, userComment) => {
     if (err) {
       res.send("no review was found");
     } else {
       // if the user already existed
-     let returnedUser = userComment[0].users.filter(user =>{
-       if (user.userEmail == user){
-         user.comments.push({
-          rest_name : rest_name,
-          rating_comment :rating_comment
-         })
-         userComments[0].save();
-         res.send(user)
-       }
-     })
-// if there is no user
-if (returnedUser.length ==0){
-  userComment[0].users.push({
-    userName : userName,
-    userEmail : email,
-    comments : [{
-      rest_name : rest_name,
-      rating_comment :rating_comment
-    }]
-  })
-  userComment[0].save();
-  let user =  userComment[0].users.filter(user=>{
-    if (userEmail == email) {
-      return user
-    }
-  })
-  res.send(user)
-}
+      let returnedUser = userComment[0].users.filter(user => {
+        if (user.userEmail == email) {
+          user.comments.push({
+            rest_name: rest_name,
+            rating_comment: rating_comment
+          })
+          userComment[0].save();
+          res.send(user)
+          return user
+        }
+      })
+      // if there is no user
+      if (returnedUser.length == 0) {
+        userComment[0].users.push({
+          userName: userName,
+          userEmail: email,
+          comments: [{
+            rest_name: rest_name,
+            rating_comment: rating_comment
+          }]
+        })
+        userComment[0].save();
+        let user = userComment[0].users.filter(user => {
+          if (user.userEmail == email) {
+            return user
+          }
+        })
+        res.send(user)
+      }
     }
   });
   // create the new review
