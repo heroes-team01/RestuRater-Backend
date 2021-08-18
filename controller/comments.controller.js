@@ -91,7 +91,7 @@ const updateReviw = async (req, res) => {
 
   const { rest_name, rating_comment, user_img } = req.body;
 
-  usersModel.find({ userslist: "users" }, (err, userComment) => {
+  usersModel.find({ userslist: "usersList" }, (err, userComment) => {
     if (err) {
       res.send("no review was found");
     } else {
