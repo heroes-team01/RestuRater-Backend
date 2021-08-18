@@ -13,7 +13,7 @@ const getReview = async (req, res) => {
         }
       });
       // console.log('test'+ selecteduser[0]);
-      console.log(selecteduser);
+      // console.log(selecteduser);
       res.send(selecteduser);
     }
     //  if (userComment === null) {
@@ -80,10 +80,22 @@ const createReview = async (req, res) => {
 
 const deleteReview = async (req, res) => {
   const reviewId = req.params.review_id;
-
-  userModel.deleteOne({ _id: reviewId }, (error, deleted) => {
-    res.send(deleted);
-  });
+  const email = req.query.email;
+  
+  usersModel.find({ userslist: "usersList" }, (err, userComment) =>{
+    let selecteduser = userComment[0].users.filter((user) => {
+      if (user.userEmail == email) {
+        return user;
+      }
+    });
+    const newCommentsArray = selecteduser[0].comments.filter(comment => comment.id !== reviewId);
+    // console.log('test'+ selecteduser[0]);
+    // console.log(selecteduser);
+    const userI
+  })
+  // userModel.deleteOne({ _id: reviewId }, (error, deleted) => {
+  //   res.send(deleted);
+  // });
 };
 
 const updateReviw = async (req, res) => {
