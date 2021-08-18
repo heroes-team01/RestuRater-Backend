@@ -11,13 +11,13 @@ const pagesSchema = new mongoose.Schema(
   {
     name: { type: String },
     viewsOfPage: { type: Number, default: 0 },
-    pageName: { unique: true, type: String },
+    pageName: { type: String },
     coverImg: { type: String },
     profileImg: { type: String },
     info: { type: String },
-    recipes: [recipesSchema],
+    // recipes: [recipesSchema],
   },
-  { timestamps: true }
+  // { timestamps: true }
 );
 
 //////////////////////////////////////////////////////////////////////////////////
