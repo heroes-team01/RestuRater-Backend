@@ -17,7 +17,6 @@ const recipesSchema = new mongoose.Schema(
     profileImg: { type: String },
     autherEmail: { type: String },
   },
-  { timestamps: true }
 );
 
 module.exports = recipesSchema;
