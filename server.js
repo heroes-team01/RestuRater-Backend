@@ -8,12 +8,14 @@ const PORT = process.env.PORT;
 app.use(express.json());
 
 const mongoose = require('mongoose');
+const {getRest,deleteRest,addRest} = require("./controller/rest.controller")
 
 const {
   getReview,
   createReview,
   deleteReview,
-  updateReviw
+  updateReviw,
+
 } = require('./controller/comments.controller');
 
 const { seedCollection } = require('./models/comments.model');
@@ -27,33 +29,33 @@ mongoose.connect('mongodb://fav-books:hebaandleen@can-of-book-backend-shard-00-0
 
 /////////////////
 
-// const Kitten = new mongoose.Schema({
-//   title: String,
-//   address: String,
-//   description: String,
-//   type:String,
-//   image_url:String,
+const cat = new mongoose.Schema({
+  title: String,
+  address: String,
+  description: String,
+  type:String,
+  image_url:String,
   
-// })
-// const Resturant = mongoose.model('Kitten', Kitten);
+})
+const Resturant = mongoose.model('cat', cat);
 
 
-// app.get('/allresturant', (req , res) => {
-//   Resturant.find({},(error,result) => {
-//     if (!error ){
-//       console.log(result)
-//       res.send(result)
-//     }else{
-//       console.log('error')
-//       res.send(error.message)
-//     }
-//   })
-// })
+app.get('/allresturant', (req , res) => {
+  Resturant.find({},(error,result) => {
+    if (!error ){
+      console.log(result)
+      res.send(result)
+    }else{
+      console.log('error')
+      res.send(error.message)
+    }
+  })
+})
 
 // function seedData() {
 //   const resturant = new Resturant({ 
-//     title: 'Silence',
-//     address: 'address',
+//     title: 'hihihi',
+//     address: 'hihihi',
 //    });
 
 //    const resturant2 = new Resturant({ 
@@ -65,11 +67,14 @@ mongoose.connect('mongodb://fav-books:hebaandleen@can-of-book-backend-shard-00-0
 //    resturant2.save()
 // }
 
-// // seedData()
+// seedData()
 
 app.get('/reviews', getReview); // Read Operation
 app.post('/review', createReview); // This endpoint is only responsible for handling requests that will create new cats
 app.delete('/review/:review_id', deleteReview);
 app.put('/review/:review_id', updateReviw);
+app.get('/allrest', getRest); // Read Operation
+app.delete('/deleteRest/:restId', deleteRest); // Read Operation
+app.post('/addrest', addRest); // 
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));

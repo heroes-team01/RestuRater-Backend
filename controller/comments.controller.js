@@ -1,5 +1,4 @@
 const { userModel, usersModel } = require("../models/comments.model"); // the userModel that we will use to get the users data from
-
 const getReview = async (req, res) => {
   const { email } = req.query; // we are getting the email from the query parameter
 
@@ -88,10 +87,14 @@ const deleteReview = async (req, res) => {
         return user;
       }
     });
+
     const newCommentsArray = selecteduser[0].comments.filter(comment => comment.id !== reviewId);
+    
+    // userComment[0].users.find(user => user.userEmail===email).comments.find(comment => comment.id===reviewId) 
     // console.log('test'+ selecteduser[0]);
     // console.log(selecteduser);
-    const userI
+    
+    // res.send(a)
   })
   // userModel.deleteOne({ _id: reviewId }, (error, deleted) => {
   //   res.send(deleted);
